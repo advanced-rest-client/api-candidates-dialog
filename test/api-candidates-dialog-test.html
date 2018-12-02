@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+  <title>api-candidates-dialog test</title>
+  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <link rel="import" href="../api-candidates-dialog.html">
+  <link rel="import" href="../../neon-animation/web-animations.html">
+</head>
+<body>
+  <test-fixture id="Basic">
+    <template>
+      <api-candidates-dialog></api-candidates-dialog>
+    </template>
+  </test-fixture>
+
+  <script>
+  suite('_renderOpened()', () => {
+    let element;
+    setup(() => {
+      element = fixture('Basic');
+    });
+
+    test('Calls cancelAnimation()', () => {
+      const stub = sinon.stub(element, 'cancelAnimation');
+      element._renderOpened();
+      assert.isTrue(stub.called);
+    });
+
+    test('Calls playAnimation()', () => {
+      const stub = sinon.stub(element, 'playAnimation');
+      element._renderOpened();
+      assert.isTrue(stub.called);
+    });
+
+    test('playAnimation() is called with "entry" argument', () => {
+      const stub = sinon.stub(element, 'playAnimation');
+      element._renderOpened();
+      assert.equal(stub.args[0][0], 'entry');
+    });
+  });
+
+  suite('_renderClosed()', () => {
+    let element;
+    setup(() => {
+      element = fixture('Basic');
+    });
+
+    test('Calls cancelAnimation()', () => {
+      const stub = sinon.stub(element, 'cancelAnimation');
+      element._renderClosed();
+      assert.isTrue(stub.called);
+    });
+
+    test('Calls playAnimation()', () => {
+      const stub = sinon.stub(element, 'playAnimation');
+      element._renderClosed();
+      assert.isTrue(stub.called);
+    });
+
+    test('playAnimation() is called with "entry" argument', () => {
+      const stub = sinon.stub(element, 'playAnimation');
+      element._renderClosed();
+      assert.equal(stub.args[0][0], 'exit');
+    });
+  });
+
+  suite('_onNeonAnimationFinish()', () => {
+    let element;
+    setup(() => {
+      element = fixture('Basic');
+    });
+
+    test('Calls _finishRenderOpened() when opened', () => {
+      const stub = sinon.stub(element, '_finishRenderOpened');
+      element.opened = true;
+      element._onNeonAnimationFinish();
+      assert.isTrue(stub.called);
+    });
+
+    test('Calls _finishRenderClosed() when not opened', () => {
+      const stub = sinon.stub(element, '_finishRenderClosed');
+      element._onNeonAnimationFinish();
+      assert.isTrue(stub.called);
+    });
+  });
+
+  suite('_computeHasSelection()', () => {
+    let element;
+    setup(() => {
+      element = fixture('Basic');
+    });
+
+    test('Returns false when no argument', () => {
+      const result = element._computeHasSelection();
+      assert.isFalse(result);
+    });
+
+    test('Returns true when has an argument', () => {
+      const result = element._computeHasSelection('test');
+      assert.isTrue(result);
+    });
+  });
+
+  suite('_selectHandler()', () => {
+    let element;
+    setup(() => {
+      element = fixture('Basic');
+    });
+
+    function dispatch() {
+      const e = new CustomEvent('api-select-entrypoint', {
+        bubbles: true,
+        cancelable: true,
+        detail: {
+          candidates: ['a', 'b', 'c']
+        }
+      });
+      document.body.dispatchEvent(e);
+      return e;
+    }
+
+    test('Does nothing when event is canceled', () => {
+      document.body.addEventListener('api-select-entrypoint', function f(e) {
+        document.body.removeEventListener('api-select-entrypoint', f);
+        e.preventDefault();
+      });
+      const e = dispatch();
+      assert.isUndefined(e.detail.result);
+    });
+
+    test('Cancels the event', () => {
+      const e = dispatch();
+      assert.isTrue(e.defaultPrevented);
+    });
+
+    test('Clears the selection', () => {
+      element.selected = 'test';
+      dispatch();
+      assert.isUndefined(element.selected);
+    });
+
+    test('Sets the candidates', () => {
+      const e = dispatch();
+      assert.deepEqual(element.candidates, e.detail.candidates);
+    });
+
+    test('Opens the dialog', () => {
+      dispatch();
+      assert.isTrue(element.opened);
+    });
+
+    test('Sets promise on the detail object', () => {
+      const e = dispatch();
+      assert.typeOf(e.detail.result.then, 'function');
+    });
+
+    test('Sets _lastResolve property', () => {
+      dispatch();
+      assert.typeOf(element._lastResolve, 'function');
+    });
+
+    test('Sets _lastReject property', () => {
+      dispatch();
+      assert.typeOf(element._lastReject, 'function');
+    });
+  });
+
+  suite('_clearPromises()', () => {
+    let element;
+    setup(() => {
+      element = fixture('Basic');
+      element._lastResolve = () => {};
+      element._lastReject = () => {};
+    });
+
+    test('Clears _lastResolve', () => {
+      element._clearPromises();
+      assert.isUndefined(element._lastResolve);
+    });
+
+    test('Clears _lastReject', () => {
+      element._clearPromises();
+      assert.isUndefined(element._lastReject);
+    });
+  });
+
+  suite('_acceptSelection()', () => {
+    let element;
+    setup(() => {
+      element = fixture('Basic');
+      element.opened = true;
+    });
+
+    test('Closes the dialog', () => {
+      element._acceptSelection();
+      assert.isFalse(element.opened);
+    });
+  });
+
+  suite('_closeHandler()', () => {
+    let element;
+    setup((done) => {
+      element = fixture('Basic');
+      element.candidates = ['a', 'b', 'c'];
+      element.opened = true;
+      flush(() => done());
+    });
+
+    test('Does nothing when no promise', () => {
+      element._closeHandler();
+      // no error
+    });
+
+    test('Rejects when canceled', (done) => {
+      let resolveCalled = false;
+      let rejectCalled = false;
+      const resolve = () => resolveCalled = true;
+      const reject = () => rejectCalled = true;
+      element._lastReject = reject;
+      element._lastResolve = resolve;
+      element.close();
+      setTimeout(() => {
+        assert.isTrue(rejectCalled);
+        assert.isFalse(resolveCalled);
+        done();
+      }, 60);
+    });
+
+    test('Rejects when no selection', () => {
+      let resolveCalled = false;
+      let rejectCalled = false;
+      const resolve = () => resolveCalled = true;
+      const reject = () => rejectCalled = true;
+      element._lastReject = reject;
+      element._lastResolve = resolve;
+      element._closeHandler({
+        detail: {
+          canceled: false
+        }
+      });
+      assert.isTrue(rejectCalled);
+      assert.isFalse(resolveCalled);
+    });
+
+    test('Resolves when has selection', () => {
+      let resolveCalled = false;
+      let rejectCalled = false;
+      const resolve = () => resolveCalled = true;
+      const reject = () => rejectCalled = true;
+      element._lastReject = reject;
+      element._lastResolve = resolve;
+      element.selected = 'a';
+      element._closeHandler({
+        detail: {
+          canceled: false
+        }
+      });
+      assert.isTrue(resolveCalled);
+      assert.isFalse(rejectCalled);
+    });
+
+    test('Resolved function has selection', () => {
+      let param;
+      const resolve = (arg) => param = arg;
+      const reject = () => {};
+      element._lastReject = reject;
+      element._lastResolve = resolve;
+      element.selected = 'a';
+      element._closeHandler({
+        detail: {
+          canceled: false
+        }
+      });
+      assert.equal(param, 'a');
+    });
+
+    test('Clears promise when resolves', () => {
+      element._lastReject = () => {};
+      element._lastResolve = () => {};
+      element.selected = 'a';
+      element._closeHandler({
+        detail: {
+          canceled: false
+        }
+      });
+      assert.isUndefined(element._lastResolve);
+      assert.isUndefined(element._lastReject);
+    });
+
+    test('Clears promise when rejects', () => {
+      element._lastReject = () => {};
+      element._lastResolve = () => {};
+      element.selected = 'a';
+      element._closeHandler({
+        detail: {
+          canceled: false
+        }
+      });
+      assert.isUndefined(element._lastResolve);
+      assert.isUndefined(element._lastReject);
+    });
+  });
+  </script>
+</body>
+</html>
