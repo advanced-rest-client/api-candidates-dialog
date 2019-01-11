@@ -1,7 +1,7 @@
 {
   "name": "api-candidates-dialog",
   "description": "A dialog to select API main file from API zip package",
-  "version": "2.0.0-preview",
+  "version": "2.0.0",
   "license": "Apache-2.0",
   "main": "api-candidates-dialog.html",
   "keywords": [
