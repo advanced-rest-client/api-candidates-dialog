@@ -18,7 +18,8 @@ A dialog to select API main file from API zip package
 -->
 
 ```html
-<api-candidates-dialog></api-candidates-dialog>
+<api-candidates-dialog id="dialog" candidates='["api.raml", "api.yaml", "api.json"]'></api-candidates-dialog>
+<button onclick="dialog.opened = true">Open</button>
 ```
 
 ### API components
