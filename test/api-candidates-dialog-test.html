@@ -4,10 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
   <title>api-candidates-dialog test</title>
-  <script src="../../webcomponentsjs/webcomponents-loader.js"></script>
-  <script src="../../web-component-tester/browser.js"></script>
-  <link rel="import" href="../api-candidates-dialog.html">
-  <link rel="import" href="../../neon-animation/web-animations.html">
+
+  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="../node_modules/@polymer/test-fixture/test-fixture.js"></script>
+  <script src="../node_modules/mocha/mocha.js"></script>
+  <script src="../node_modules/chai/chai.js"></script>
+  <script src="../node_modules/wct-mocha/wct-mocha.js"></script>
+  <script src="../node_modules/sinon/pkg/sinon.js"></script>
+
+  <script type="module" src="../api-candidates-dialog.js"></script>
+  <script src="../node_modules/web-animations-js/web-animations-next.min.js"></script>
 </head>
 <body>
   <test-fixture id="Basic">
@@ -16,7 +22,7 @@
     </template>
   </test-fixture>
 
-  <script>
+  <script type="module">
   suite('_renderOpened()', () => {
     let element;
     setup(() => {

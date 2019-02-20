@@ -5,18 +5,22 @@
  *   https://github.com/Polymer/tools/tree/master/packages/gen-typescript-declarations
  *
  * To modify these typings, edit the source file(s):
- *   api-candidates-dialog.html
+ *   api-candidates-dialog.js
  */
 
-/// <reference path="../polymer/types/polymer-element.d.ts" />
-/// <reference path="../polymer/types/lib/legacy/class.d.ts" />
-/// <reference path="../neon-animation/neon-animation-runner-behavior.d.ts" />
-/// <reference path="../paper-dialog-behavior/paper-dialog-behavior.d.ts" />
-/// <reference path="../iron-flex-layout/iron-flex-layout.d.ts" />
-/// <reference path="../paper-styles/shadow.d.ts" />
-/// <reference path="../paper-button/paper-button.d.ts" />
-/// <reference path="../paper-item/paper-item.d.ts" />
-/// <reference path="../paper-listbox/paper-listbox.d.ts" />
+
+// tslint:disable:variable-name Describing an API that's defined elsewhere.
+// tslint:disable:no-any describes the API as best we are able today
+
+import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+
+import {mixinBehaviors} from '@polymer/polymer/lib/legacy/class.js';
+
+import {NeonAnimationRunnerBehavior} from '@polymer/neon-animation/neon-animation-runner-behavior.js';
+
+import {PaperDialogBehavior} from '@polymer/paper-dialog-behavior/paper-dialog-behavior.js';
+
+import {html} from '@polymer/polymer/lib/utils/html-tag.js';
 
 declare namespace ApiElements {
 
@@ -52,6 +56,9 @@ declare namespace ApiElements {
   }
 }
 
-interface HTMLElementTagNameMap {
-  "api-candidates-dialog": ApiElements.ApiCandidatesDialog;
+declare global {
+
+  interface HTMLElementTagNameMap {
+    "api-candidates-dialog": ApiElements.ApiCandidatesDialog;
+  }
 }

@@ -1,29 +1,54 @@
 {
-  "name": "@api-components/api-candidates-dialog",
   "description": "A dialog to select API main file from API zip package",
-  "version": "2.0.0",
+  "keywords": [
+    "api-components"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/advanced-rest-client/api-candidates-dialog.git"
+  },
+  "name": "@api-components/api-candidates-dialog",
+  "version": "3.0.0-preview.1",
   "license": "Apache-2.0",
-  "main": "api-candidates-dialog.html",
+  "main": "api-candidates-dialog.js",
   "authors": [
     "Pawel Psztyc",
     "The Advanced REST client authors <arc@mulesoft.com>"
   ],
   "devDependencies": {
-    "@polymer/gen-typescript-declarations": "^1.5.1"
+    "@polymer/gen-typescript-declarations": "^1.5.1",
+    "@polymer/iron-component-page": "^4.0.0",
+    "@polymer/iron-demo-helpers": "^3.0.0",
+    "@polymer/iron-test-helpers": "^3.0.0",
+    "@polymer/test-fixture": "^4.0.2",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "chai": "^4.2.0",
+    "chance": "^1.0.18",
+    "mocha": "^5.2.0",
+    "sinon": "^7.2.3",
+    "wct-mocha": "^1.0.0",
+    "web-animations-js": "^2.3.1"
   },
-  "private": false,
   "scripts": {
     "lint": "polymer lint api-candidates-dialog.html",
     "test-sauce": "polymer test --plugin sauce --job-name \"api-candidates-dialog:local-test\"",
     "test": "polymer test --plugin local",
     "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/advanced-rest-client/api-candidates-dialog.git"
-  },
   "bugs": {
     "url": "https://github.com/advanced-rest-client/api-candidates-dialog/issues",
     "email": "arc@mulesoft.com"
+  },
+  "contributors": [
+    "Pawel Psztyc",
+    "The Advanced REST client authors <arc@mulesoft.com>"
+  ],
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0",
+    "@polymer/neon-animation": "^3.0.0",
+    "@polymer/paper-dialog-behavior": "^3.0.0",
+    "@polymer/paper-button": "^3.0.0",
+    "@polymer/paper-item": "^3.0.0",
+    "@polymer/paper-listbox": "^3.0.0"
   }
 }
