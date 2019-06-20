@@ -1,119 +1,111 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
-  <title>api-candidates-dialog test</title>
+import { fixture, assert, nextFrame, aTimeout } from '@open-wc/testing';
+import sinon from 'sinon/pkg/sinon-esm.js';
+import '../api-candidates-dialog.js';
 
-  <script src="../../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-  <script src="../../../@polymer/test-fixture/test-fixture.js"></script>
-  <script src="../../../mocha/mocha.js"></script>
-  <script src="../../../chai/chai.js"></script>
-  <script src="../../../wct-mocha/wct-mocha.js"></script>
-  <script src="../../../sinon/pkg/sinon.js"></script>
+[
+  '../node_modules/web-animations-js/web-animations-next.min.js'
+].forEach((src) => {
+  const s = document.createElement('script');
+  s.src = src;
+  document.head.appendChild(s);
+});
 
-  <script type="module" src="../api-candidates-dialog.js"></script>
-  <script src="../../../web-animations-js/web-animations-next.min.js"></script>
-</head>
-<body>
-  <test-fixture id="Basic">
-    <template>
-      <api-candidates-dialog></api-candidates-dialog>
-    </template>
-  </test-fixture>
+describe('<api-candidates-dialog>', function() {
+  async function basicFixture() {
+    return (await fixture(`<api-candidates-dialog></api-candidates-dialog>`));
+  }
 
-  <script type="module">
-  suite('_renderOpened()', () => {
+  describe('_renderOpened()', () => {
     let element;
-    setup(() => {
-      element = fixture('Basic');
+    beforeEach(async () => {
+      element = await basicFixture();
     });
 
-    test('Calls cancelAnimation()', () => {
+    it('Calls cancelAnimation()', () => {
       const stub = sinon.stub(element, 'cancelAnimation');
       element._renderOpened();
       assert.isTrue(stub.called);
     });
 
-    test('Calls playAnimation()', () => {
+    it('Calls playAnimation()', () => {
       const stub = sinon.stub(element, 'playAnimation');
       element._renderOpened();
       assert.isTrue(stub.called);
     });
 
-    test('playAnimation() is called with "entry" argument', () => {
+    it('playAnimation() is called with "entry" argument', () => {
       const stub = sinon.stub(element, 'playAnimation');
       element._renderOpened();
       assert.equal(stub.args[0][0], 'entry');
     });
   });
 
-  suite('_renderClosed()', () => {
+  describe('_renderClosed()', () => {
     let element;
-    setup(() => {
-      element = fixture('Basic');
+    beforeEach(async () => {
+      element = await basicFixture();
     });
 
-    test('Calls cancelAnimation()', () => {
+    it('Calls cancelAnimation()', () => {
       const stub = sinon.stub(element, 'cancelAnimation');
       element._renderClosed();
       assert.isTrue(stub.called);
     });
 
-    test('Calls playAnimation()', () => {
+    it('Calls playAnimation()', () => {
       const stub = sinon.stub(element, 'playAnimation');
       element._renderClosed();
       assert.isTrue(stub.called);
     });
 
-    test('playAnimation() is called with "entry" argument', () => {
+    it('playAnimation() is called with "entry" argument', () => {
       const stub = sinon.stub(element, 'playAnimation');
       element._renderClosed();
       assert.equal(stub.args[0][0], 'exit');
     });
   });
 
-  suite('_onNeonAnimationFinish()', () => {
+  describe('_onNeonAnimationFinish()', () => {
     let element;
-    setup(() => {
-      element = fixture('Basic');
+    beforeEach(async () => {
+      element = await basicFixture();
     });
 
-    test('Calls _finishRenderOpened() when opened', () => {
+    it('Calls _finishRenderOpened() when opened', () => {
       const stub = sinon.stub(element, '_finishRenderOpened');
       element.opened = true;
       element._onNeonAnimationFinish();
       assert.isTrue(stub.called);
     });
 
-    test('Calls _finishRenderClosed() when not opened', () => {
+    it('Calls _finishRenderClosed() when not opened', () => {
       const stub = sinon.stub(element, '_finishRenderClosed');
       element._onNeonAnimationFinish();
       assert.isTrue(stub.called);
     });
   });
 
-  suite('_computeHasSelection()', () => {
+  describe('_computeHasSelection()', () => {
     let element;
-    setup(() => {
-      element = fixture('Basic');
+    beforeEach(async () => {
+      element = await basicFixture();
     });
 
-    test('Returns false when no argument', () => {
+    it('Returns false when no argument', () => {
       const result = element._computeHasSelection();
       assert.isFalse(result);
     });
 
-    test('Returns true when has an argument', () => {
+    it('Returns true when has an argument', () => {
       const result = element._computeHasSelection('test');
       assert.isTrue(result);
     });
   });
 
-  suite('_selectHandler()', () => {
+  describe('_selectHandler()', () => {
     let element;
-    setup(() => {
-      element = fixture('Basic');
+    beforeEach(async () => {
+      element = await basicFixture();
     });
 
     function dispatch() {
@@ -128,7 +120,7 @@
       return e;
     }
 
-    test('Does nothing when event is canceled', () => {
+    it('Does nothing when event is canceled', () => {
       document.body.addEventListener('api-select-entrypoint', function f(e) {
         document.body.removeEventListener('api-select-entrypoint', f);
         e.preventDefault();
@@ -137,90 +129,90 @@
       assert.isUndefined(e.detail.result);
     });
 
-    test('Cancels the event', () => {
+    it('Cancels the event', () => {
       const e = dispatch();
       assert.isTrue(e.defaultPrevented);
     });
 
-    test('Clears the selection', () => {
+    it('Clears the selection', () => {
       element.selected = 'test';
       dispatch();
       assert.isUndefined(element.selected);
     });
 
-    test('Sets the candidates', () => {
+    it('Sets the candidates', () => {
       const e = dispatch();
       assert.deepEqual(element.candidates, e.detail.candidates);
     });
 
-    test('Opens the dialog', () => {
+    it('Opens the dialog', () => {
       dispatch();
       assert.isTrue(element.opened);
     });
 
-    test('Sets promise on the detail object', () => {
+    it('Sets promise on the detail object', () => {
       const e = dispatch();
       assert.typeOf(e.detail.result.then, 'function');
     });
 
-    test('Sets _lastResolve property', () => {
+    it('Sets _lastResolve property', () => {
       dispatch();
       assert.typeOf(element._lastResolve, 'function');
     });
 
-    test('Sets _lastReject property', () => {
+    it('Sets _lastReject property', () => {
       dispatch();
       assert.typeOf(element._lastReject, 'function');
     });
   });
 
-  suite('_clearPromises()', () => {
+  describe('_clearPromises()', () => {
     let element;
-    setup(() => {
-      element = fixture('Basic');
+    beforeEach(async () => {
+      element = await basicFixture();
       element._lastResolve = () => {};
       element._lastReject = () => {};
     });
 
-    test('Clears _lastResolve', () => {
+    it('Clears _lastResolve', () => {
       element._clearPromises();
       assert.isUndefined(element._lastResolve);
     });
 
-    test('Clears _lastReject', () => {
+    it('Clears _lastReject', () => {
       element._clearPromises();
       assert.isUndefined(element._lastReject);
     });
   });
 
-  suite('_acceptSelection()', () => {
+  describe('_acceptSelection()', () => {
     let element;
-    setup(() => {
-      element = fixture('Basic');
+    beforeEach(async () => {
+      element = await basicFixture();
       element.opened = true;
     });
 
-    test('Closes the dialog', () => {
+    it('Closes the dialog', () => {
       element._acceptSelection();
       assert.isFalse(element.opened);
     });
   });
 
-  suite('_closeHandler()', () => {
+  describe('_closeHandler()', () => {
     let element;
-    setup((done) => {
-      element = fixture('Basic');
+    beforeEach(async () => {
+      element = await basicFixture();
       element.candidates = ['a', 'b', 'c'];
       element.opened = true;
-      flush(() => done());
+      await nextFrame();
     });
 
-    test('Does nothing when no promise', () => {
+    it('Does nothing when no promise', () => {
       element._closeHandler();
       // no error
     });
 
-    test('Rejects when canceled', (done) => {
+    it('Rejects when canceled', (done) => {
       let resolveCalled = false;
       let rejectCalled = false;
       const resolve = () => resolveCalled = true;
@@ -235,7 +227,7 @@
       }, 60);
     });
 
-    test('Rejects when no selection', () => {
+    it('Rejects when no selection', () => {
       let resolveCalled = false;
       let rejectCalled = false;
       const resolve = () => resolveCalled = true;
@@ -251,7 +243,7 @@
       assert.isFalse(resolveCalled);
     });
 
-    test('Resolves when has selection', () => {
+    it('Resolves when has selection', () => {
       let resolveCalled = false;
       let rejectCalled = false;
       const resolve = () => resolveCalled = true;
@@ -268,7 +260,7 @@
       assert.isFalse(rejectCalled);
     });
 
-    test('Resolved function has selection', () => {
+    it('Resolved function has selection', () => {
       let param;
       const resolve = (arg) => param = arg;
       const reject = () => {};
@@ -283,7 +275,7 @@
       assert.equal(param, 'a');
     });
 
-    test('Clears promise when resolves', () => {
+    it('Clears promise when resolves', () => {
       element._lastReject = () => {};
       element._lastResolve = () => {};
       element.selected = 'a';
@@ -296,7 +288,7 @@
       assert.isUndefined(element._lastReject);
     });
 
-    test('Clears promise when rejects', () => {
+    it('Clears promise when rejects', () => {
       element._lastReject = () => {};
       element._lastResolve = () => {};
       element.selected = 'a';
@@ -309,6 +301,4 @@
       assert.isUndefined(element._lastReject);
     });
   });
-  </script>
-</body>
-</html>
+});
