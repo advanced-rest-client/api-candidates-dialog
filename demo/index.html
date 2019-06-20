@@ -5,39 +5,31 @@
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
     <title>api-request-editor demo</title>
 
-    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-    <script src="../../../web-animations-js/web-animations-next.min.js"></script>
-
-    <script type="module">
-      import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
-      import '@polymer/polymer/lib/elements/dom-bind.js';
-      import '@polymer/paper-button/paper-button.js';
-      import '@polymer/neon-animation/animations/slide-up-animation.js';
-      import '@polymer/neon-animation/animations/slide-from-top-animation.js';
-      import '../api-candidates-dialog.js';
-    </script>
-    <custom-style>
-      <style is="custom-style" include="demo-pages-shared-styles">
-      </style>
-    </custom-style>
-    <script src="../../../chance/chance.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
+    <script src="../node_modules/web-animations-js/web-animations-next.min.js"></script>
+    <script src="../node_modules/chance/chance.js"></script>
+    <script type="module" src="../node_modules/@advanced-rest-client/arc-demo-helper/arc-demo-helper.js"></script>
   </head>
   <body>
-    <dom-bind id="demo">
-      <template is="dom-bind">
-        <div class="vertical-section-container centered" role="main">
-          <api-candidates-dialog candidates="[[candidates]]" entry-animation="slide-from-top-animation" exit-animation="slide-up-animation"></api-candidates-dialog>
-          <paper-button on-click="_openDialogEvent">Open dialog</paper-button>
-        </div>
+    <div class="vertical-section-container centered" role="main">
+      <api-candidates-dialog id="dialog" entry-animation="slide-from-top-animation" exit-animation="slide-up-animation"></api-candidates-dialog>
+      <paper-button id="trigger">Open dialog</paper-button>
+    </div>
 
-        <output>
-          <p>Selected: [[selected]]</p>
-        </output>
-      </template>
-    </dom-bind>
+    <output>
+      <p id="log"></p>
+    </output>
     <script type="module">
+    import '../node_modules/@polymer/paper-button/paper-button.js';
+    import '../node_modules/@polymer/neon-animation/animations/slide-up-animation.js';
+    import '../node_modules/@polymer/neon-animation/animations/slide-from-top-animation.js';
+    import '../api-candidates-dialog.js';
     /* global chance */
-    (function(app) {
+    (function() {
+      const app = {};
+      app.setCandidates = function(list) {
+        document.getElementById('dialog').candidates = list;
+      };
       app.genList = () => {
         const list = [];
         for (let i = 0; i < 5; i++) {
@@ -46,11 +38,12 @@
         return list;
       };
       app._load = function() {
-        app.candidates = app.genList();
+        app.setCandidates(app.genList());
+        document.getElementById('trigger').addEventListener('click', () => app._openDialogEvent());
       };
 
       app._openDialog = () => {
-        document.body.querySelector('api-candidates-dialog').opened = true;
+        document.getElementById('dialog').opened = true;
       };
 
       app._openDialogEvent = () => {
@@ -64,15 +57,15 @@
         document.body.dispatchEvent(e);
         e.detail.result
         .then((file) => {
-          app.selected = file;
+          document.getElementById('log').innerText = 'Selected: ' + file;
         })
         .catch((cause) => {
-          app.selected = '';
+          document.getElementById('log').innerText = 'Error.';
           console.log(cause);
         });
       };
       window.addEventListener('WebComponentsReady', () => app._load());
-    })(document.getElementById('demo'));
+    })();
     </script>
   </body>
 </html>

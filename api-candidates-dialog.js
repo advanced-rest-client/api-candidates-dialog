@@ -1,13 +1,13 @@
-import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
-import {mixinBehaviors} from '../../@polymer/polymer/lib/legacy/class.js';
-import {NeonAnimationRunnerBehavior} from '../../@polymer/neon-animation/neon-animation-runner-behavior.js';
-import {PaperDialogBehavior} from '../../@polymer/paper-dialog-behavior/paper-dialog-behavior.js';
-import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
-import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
-import '../../@polymer/paper-styles/shadow.js';
-import '../../@polymer/paper-button/paper-button.js';
-import '../../@polymer/paper-item/paper-item.js';
-import '../../@polymer/paper-listbox/paper-listbox.js';
+import { PolymerElement } from '@polymer/polymer/polymer-element.js';
+import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
+import { NeonAnimationRunnerBehavior } from '@polymer/neon-animation/neon-animation-runner-behavior.js';
+import { PaperDialogBehavior } from '@polymer/paper-dialog-behavior/paper-dialog-behavior.js';
+import { html } from '@polymer/polymer/lib/utils/html-tag.js';
+import '@polymer/iron-flex-layout/iron-flex-layout.js';
+import '@polymer/paper-styles/shadow.js';
+import '@polymer/paper-button/paper-button.js';
+import '@polymer/paper-item/paper-item.js';
+import '@polymer/paper-listbox/paper-listbox.js';
 /**
  * `api-candidates-dialog`
  *
