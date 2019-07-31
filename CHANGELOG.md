@@ -8,3 +8,12 @@
 
 
 
+# 3.0.0 (2019-07-31)
+
+
+### Bug Fixes
+
+* fixing npm audit errors by upgrading to latest ARC standard ([e59ebeb](https://github.com/advanced-rest-client/api-candidates-dialog/commit/e59ebeb))
+
+
+
